@@ -22,3 +22,18 @@ declare module "*.gif" {
     const value: any;
     export default value;
 }
+
+declare module "*.gltf" {
+    const value: any;
+    export default value;
+}
+
+declare module "*.txt" {
+    const value: any;
+    export default value;
+}
+
+declare module "*.bin" {
+    const value: any;
+    export default value;
+}
