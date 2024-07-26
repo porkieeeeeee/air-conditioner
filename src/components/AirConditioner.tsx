@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 const AirConditioner = () => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -37,8 +38,14 @@ const AirConditioner = () => {
 
         camera.position.z = 5;
 
+        // OrbitControls 추가
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true; // 부드러운 회전을 위해
+        controls.dampingFactor = 0.25; // 감쇠 계수
+
         const animate = () => {
             requestAnimationFrame(animate);
+            controls.update(); // controls 업데이트
             renderer.render(scene, camera);
         };
 
