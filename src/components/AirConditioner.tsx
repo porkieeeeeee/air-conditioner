@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import styled from "@emotion/styled";
 
 const AirConditioner = () => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -29,6 +30,7 @@ const AirConditioner = () => {
             `${process.env.PUBLIC_URL}/models/lg-whisen/scene.gltf`,
             (gltf) => {
                 gltf.scene.scale.set(5, 5, 5);
+                // gltf.scene.position.y += 10;
                 scene.add(gltf.scene);
                 renderer.render(scene, camera);
             },
@@ -59,7 +61,13 @@ const AirConditioner = () => {
         };
     }, []);
 
-    return <canvas ref={canvasRef} />;
+    return <Container ref={canvasRef} />;
 };
+
+const Container = styled.canvas`
+    display: block;
+    width: 100%;
+    height: 100%;
+`;
 
 export default AirConditioner;

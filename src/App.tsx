@@ -1,7 +1,7 @@
-import AirConditioner from "./components/AirConditioner";
+import MainPage from "views/MainPage";
 
 function App() {
-    return <AirConditioner />;
+    return <MainPage />;
 }
 
 export default App;
