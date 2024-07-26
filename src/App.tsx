@@ -1,5 +1,7 @@
+import AirConditioner from "./components/AirConditioner";
+
 function App() {
-    return <div>init</div>;
+    return <AirConditioner />;
 }
 
 export default App;
