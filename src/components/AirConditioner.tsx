@@ -15,6 +15,8 @@ const AirConditioner = () => {
         const renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current });
         renderer.setSize(window.innerWidth, window.innerHeight);
 
+        renderer.setClearColor(0xffffff);
+
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
         scene.add(ambientLight);
 
@@ -24,9 +26,9 @@ const AirConditioner = () => {
 
         const loader = new GLTFLoader();
         loader.load(
-            `${process.env.PUBLIC_URL}/models/lg-unit/scene.gltf`,
+            `${process.env.PUBLIC_URL}/models/lg-whisen/scene.gltf`,
             (gltf) => {
-                gltf.scene.scale.set(0.01, 0.01, 0.01);
+                gltf.scene.scale.set(5, 5, 5);
                 scene.add(gltf.scene);
                 renderer.render(scene, camera);
             },
@@ -38,14 +40,13 @@ const AirConditioner = () => {
 
         camera.position.z = 5;
 
-        // OrbitControls 추가
         const controls = new OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true; // 부드러운 회전을 위해
-        controls.dampingFactor = 0.25; // 감쇠 계수
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.25;
 
         const animate = () => {
             requestAnimationFrame(animate);
-            controls.update(); // controls 업데이트
+            controls.update();
             renderer.render(scene, camera);
         };
 
