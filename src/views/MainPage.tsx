@@ -1,16 +1,16 @@
 import styled from "@emotion/styled";
-import AirConditioner from "components/AirConditioner";
+import Room from "components/Room";
 
 const MainPage = () => {
-    return (
-        <Container>
-            <AirConditioner />
-        </Container>
-    );
+  return (
+    <Container>
+      <Room />
+    </Container>
+  );
 };
 const Container = styled.div`
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 `;
 
 export default MainPage;
