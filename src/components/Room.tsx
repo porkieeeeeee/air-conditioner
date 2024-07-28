@@ -1,11 +1,13 @@
 import styled from "@emotion/styled";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import AirConditioner from "./AirConditioner";
 
 const Room = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [room, setRoom] = useState<THREE.Group | null>(null);
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -35,6 +37,7 @@ const Room = () => {
       (gltf) => {
         gltf.scene.scale.set(0.6, 0.6, 0.6);
         scene.add(gltf.scene);
+        setRoom(gltf.scene);
         renderer.render(scene, camera);
       },
       undefined,
@@ -43,13 +46,11 @@ const Room = () => {
       }
     );
 
-    // 카메라 위치 설정
-    camera.position.set(2, 1.5, 3);
+    camera.position.set(1.5, 2.5, 3.4);
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.25;
-    controls.enableRotate = false; // 회전 비활성화
 
     const animate = () => {
       requestAnimationFrame(animate);
@@ -66,10 +67,15 @@ const Room = () => {
     };
   }, []);
 
-  return <Container ref={canvasRef} />;
+  return (
+    <Container ref={canvasRef}>
+      {room && <AirConditioner roomModel={room} />}
+    </Container>
+  );
 };
 
 const Container = styled.canvas`
+  position: relative;
   display: block;
   width: 100%;
   height: 100%;
