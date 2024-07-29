@@ -8,16 +8,18 @@ import AirConditioner from "./AirConditioner";
 const Room = () => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [room, setRoom] = useState<THREE.Group | null>(null);
+    const [camera, setCamera] = useState<THREE.PerspectiveCamera | null>(null);
+    const [renderer, setRenderer] = useState<THREE.WebGLRenderer | null>(null);
 
     useEffect(() => {
         if (!canvasRef.current) return;
 
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const cam = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const rend = new THREE.WebGLRenderer({ canvas: canvasRef.current });
 
-        const renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current });
-        renderer.setSize(canvasRef.current.clientWidth, canvasRef.current.clientHeight);
-        renderer.setClearColor(0xffffff);
+        rend.setSize(canvasRef.current.clientWidth, canvasRef.current.clientHeight);
+        rend.setClearColor(0xffffff);
 
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
         scene.add(ambientLight);
@@ -35,7 +37,7 @@ const Room = () => {
                 gltf.scene.position.set(2, -1.5, -2);
                 scene.add(gltf.scene);
                 setRoom(gltf.scene);
-                renderer.render(scene, camera);
+                rend.render(scene, cam);
             },
             undefined,
             (error) => {
@@ -43,19 +45,22 @@ const Room = () => {
             }
         );
 
-        camera.position.set(2.4, 0.1, 2.4);
+        cam.position.set(2.4, 0.1, 2.4);
 
-        const controls = new OrbitControls(camera, renderer.domElement);
+        const controls = new OrbitControls(cam, rend.domElement);
         controls.enableRotate = false;
         controls.enableZoom = false;
         controls.enablePan = false;
 
         const renderLoop = () => {
             requestAnimationFrame(renderLoop);
-            renderer.render(scene, camera);
+            rend.render(scene, cam);
         };
 
         renderLoop();
+
+        setCamera(cam);
+        setRenderer(rend);
 
         return () => {
             if (canvasRef.current) {
@@ -64,7 +69,15 @@ const Room = () => {
         };
     }, []);
 
-    return <Container ref={canvasRef}>{room && <AirConditioner roomModel={room} />}</Container>;
+    const handleAirConditionerClick = () => {
+        alert("Air Conditioner clicked!");
+    };
+
+    return (
+        <Container ref={canvasRef}>
+            {room && camera && <AirConditioner roomModel={room} camera={camera} onClick={handleAirConditionerClick} />}
+        </Container>
+    );
 };
 
 const Container = styled.canvas`
