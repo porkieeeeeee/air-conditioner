@@ -16,7 +16,7 @@ const Room = () => {
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
         const renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current });
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setSize(canvasRef.current.clientWidth, canvasRef.current.clientHeight);
         renderer.setClearColor(0xffffff);
 
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
@@ -30,7 +30,7 @@ const Room = () => {
         loader.load(
             `${process.env.PUBLIC_URL}/models/room/scene.gltf`,
             (gltf) => {
-                gltf.scene.scale.set(0.6, 0.6, 0.6);
+                gltf.scene.scale.set(0.65, 0.65, 0.65);
                 gltf.scene.rotation.y = -0.25 * Math.PI;
                 gltf.scene.position.set(2, -1.5, -2);
                 scene.add(gltf.scene);
@@ -43,19 +43,19 @@ const Room = () => {
             }
         );
 
-        camera.position.set(2.3, 0.1, 2.3);
+        camera.position.set(2.4, 0.1, 2.4);
 
         const controls = new OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.25;
+        controls.enableRotate = false;
+        controls.enableZoom = false;
+        controls.enablePan = false;
 
-        const animate = () => {
-            requestAnimationFrame(animate);
-            controls.update();
+        const renderLoop = () => {
+            requestAnimationFrame(renderLoop);
             renderer.render(scene, camera);
         };
 
-        animate();
+        renderLoop();
 
         return () => {
             if (canvasRef.current) {
@@ -70,8 +70,9 @@ const Room = () => {
 const Container = styled.canvas`
     position: relative;
     display: block;
-    width: 100%;
-    height: 100%;
+    width: 100% !important;
+    height: 100% !important;
+    touch-action: auto !important;
 `;
 
 export default Room;
