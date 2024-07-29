@@ -5,7 +5,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 interface IAirConditionerProps {
     roomModel: THREE.Group;
     camera: THREE.PerspectiveCamera;
-    onClick: () => void;
+    onClick: (airConditionerMesh: THREE.Mesh) => void;
 }
 
 const AirConditioner = ({ roomModel, camera, onClick }: IAirConditionerProps) => {
@@ -34,29 +34,24 @@ const AirConditioner = ({ roomModel, camera, onClick }: IAirConditionerProps) =>
         const onClickHandler = (event: MouseEvent) => {
             mouseRef.current.x = (event.clientX / window.innerWidth) * 2 - 1;
             mouseRef.current.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            if (airConditionerRef.current) {
+                raycasterRef.current.setFromCamera(mouseRef.current, camera);
+                const intersects = raycasterRef.current.intersectObject(airConditionerRef.current, true);
+                if (intersects.length > 0) {
+                    const airConditionerMesh = intersects[0].object;
+
+                    if (airConditionerMesh instanceof THREE.Mesh) {
+                        onClick(airConditionerMesh);
+                    }
+                }
+            }
         };
 
         window.addEventListener("click", onClickHandler);
-
         return () => {
             window.removeEventListener("click", onClickHandler);
         };
-    }, []);
-
-    useEffect(() => {
-        const checkIntersection = () => {
-            if (airConditionerRef.current) {
-                raycasterRef.current.setFromCamera(mouseRef.current, camera);
-
-                const intersects = raycasterRef.current.intersectObject(airConditionerRef.current, true);
-                if (intersects.length > 0) {
-                    onClick();
-                }
-            }
-            requestAnimationFrame(checkIntersection);
-        };
-
-        checkIntersection();
     }, [camera, onClick]);
 
     return null;

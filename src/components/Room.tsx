@@ -1,3 +1,4 @@
+// Room.js
 import styled from "@emotion/styled";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
@@ -10,6 +11,7 @@ const Room = () => {
     const [room, setRoom] = useState<THREE.Group | null>(null);
     const [camera, setCamera] = useState<THREE.PerspectiveCamera | null>(null);
     const [renderer, setRenderer] = useState<THREE.WebGLRenderer | null>(null);
+    const [targetPosition, setTargetPosition] = useState<THREE.Vector3 | null>(null);
 
     useEffect(() => {
         if (!canvasRef.current) return;
@@ -54,6 +56,11 @@ const Room = () => {
 
         const renderLoop = () => {
             requestAnimationFrame(renderLoop);
+
+            if (targetPosition) {
+                cam.position.lerp(targetPosition, 0.1);
+            }
+
             rend.render(scene, cam);
         };
 
@@ -67,10 +74,17 @@ const Room = () => {
                 canvasRef.current = null;
             }
         };
-    }, []);
+    }, [targetPosition]);
 
-    const handleAirConditionerClick = () => {
-        alert("Air Conditioner clicked!");
+    const handleAirConditionerClick = (airConditioner: THREE.Mesh) => {
+        if (camera) {
+            const boundingBox = new THREE.Box3().setFromObject(airConditioner);
+            const center = boundingBox.getCenter(new THREE.Vector3());
+            const fixedCameraPosition = new THREE.Vector3(center.x - 1, center.y, center.z + 1);
+
+            camera.position.copy(fixedCameraPosition);
+            camera.lookAt(center);
+        }
     };
 
     return (
