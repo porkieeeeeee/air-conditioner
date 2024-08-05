@@ -1,0 +1,11 @@
+Model Information:
+* title:	Stone Hut (high poly)
+* source:	https://sketchfab.com/3d-models/stone-hut-high-poly-d2b4dc97550e4e589a561b57763e5305
+* author:	Sereib (https://sketchfab.com/Sereib)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Stone Hut (high poly)" (https://sketchfab.com/3d-models/stone-hut-high-poly-d2b4dc97550e4e589a561b57763e5305) by Sereib (https://sketchfab.com/Sereib) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

@@ -1,0 +1,11 @@
+Model Information:
+* title:	Stone Ground
+* source:	https://sketchfab.com/3d-models/stone-ground-9658c401bdef4cb8ab1e85b67622fa20
+* author:	rikardo2041 (https://sketchfab.com/rikardo2041)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Stone Ground" (https://sketchfab.com/3d-models/stone-ground-9658c401bdef4cb8ab1e85b67622fa20) by rikardo2041 (https://sketchfab.com/rikardo2041) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
