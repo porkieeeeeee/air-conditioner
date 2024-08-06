@@ -15,7 +15,7 @@ const Character = () => {
     x: 0,
     y: 0,
   });
-  const [cameraRadius] = useState(3);
+  const [cameraRadius, setCameraRadius] = useState(3);
   const [cameraAngle, setCameraAngle] = useState({ theta: 0 });
   const [cameraForwardDirection, setCameraForwardDirection] = useState(
     new THREE.Vector3()
@@ -75,11 +75,17 @@ const Character = () => {
       setIsDragging(false);
     };
 
+    const handleWheel = (event: WheelEvent) => {
+      const delta = event.deltaY > 0 ? 0.1 : -0.1;
+      setCameraRadius((prev) => Math.max(1, prev + delta));
+    };
+
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
     window.addEventListener("mousedown", handleMouseDown);
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("wheel", handleWheel);
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
@@ -87,6 +93,7 @@ const Character = () => {
       window.removeEventListener("mousedown", handleMouseDown);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("wheel", handleWheel);
     };
   }, [isDragging, previousMousePosition]);
 
