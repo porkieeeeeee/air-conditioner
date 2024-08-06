@@ -141,7 +141,16 @@ const Character = () => {
       }
 
       if (moveDirection.length() > 0) {
-        characterRef.current.position.add(moveDirection);
+        const newPosition = characterRef.current.position
+          .clone()
+          .add(moveDirection);
+
+        const boundary = 5;
+
+        newPosition.x = Math.max(-boundary, Math.min(boundary, newPosition.x));
+        newPosition.z = Math.max(-boundary, Math.min(boundary, newPosition.z));
+
+        characterRef.current.position.copy(newPosition);
 
         const angle = Math.atan2(-moveDirection.x, -moveDirection.z);
         characterRef.current.rotation.y = angle;
