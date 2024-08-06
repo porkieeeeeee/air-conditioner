@@ -27,13 +27,14 @@ const Character = () => {
     }
 
     const handleKeyDown = (event: KeyboardEvent) => {
+      const cameraDirection = new THREE.Vector3();
+      camera.getWorldDirection(cameraDirection);
+      cameraDirection.y = 0;
+      cameraForwardDirection.copy(cameraDirection.normalize());
+
       switch (event.key) {
         case "w":
           setDirection("forward");
-          const cameraDirection = new THREE.Vector3();
-          camera.getWorldDirection(cameraDirection);
-          cameraDirection.y = 0;
-          cameraForwardDirection.copy(cameraDirection.normalize());
           break;
         case "a":
           setDirection("left");
