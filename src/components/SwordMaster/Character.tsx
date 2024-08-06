@@ -54,7 +54,6 @@ const Character = () => {
     const handleMouseMove = (event: MouseEvent) => {
       if (isDragging) {
         const deltaX = event.clientX - previousMousePosition.x;
-
         const sensitivity = 0.005;
         setCameraAngle((prev) => ({
           theta: prev.theta - deltaX * sensitivity,
@@ -103,29 +102,50 @@ const Character = () => {
       let moveX = 0;
       let moveZ = 0;
 
+      // 카메라의 방향을 기준으로 이동 방향 설정
+      const cameraDirection = new THREE.Vector3();
+      camera.getWorldDirection(cameraDirection);
+      cameraDirection.y = 0; // y축 방향 제거
+      cameraDirection.normalize(); // 방향 벡터 정규화
+
       switch (direction) {
         case "forward":
-          moveZ -= speed;
-          break;
-        case "left":
-          moveX -= speed;
+          moveX += cameraDirection.x * speed;
+          moveZ += cameraDirection.z * speed;
           break;
         case "backward":
-          moveZ += speed;
+          moveX -= cameraDirection.x * speed;
+          moveZ -= cameraDirection.z * speed;
+          break;
+        case "left":
+          const leftDirection = new THREE.Vector3(
+            -cameraDirection.z,
+            0,
+            cameraDirection.x
+          ).normalize();
+          moveX += leftDirection.x * speed;
+          moveZ += leftDirection.z * speed;
           break;
         case "right":
-          moveX += speed;
+          const rightDirection = new THREE.Vector3(
+            cameraDirection.z,
+            0,
+            -cameraDirection.x
+          ).normalize();
+          moveX += rightDirection.x * speed;
+          moveZ += rightDirection.z * speed;
           break;
       }
 
       if (moveX !== 0 || moveZ !== 0) {
-        const angle = Math.atan2(-moveX, -moveZ);
-        characterRef.current.rotation.y = angle;
-
         characterRef.current.position.x += moveX;
         characterRef.current.position.z += moveZ;
+
+        const angle = Math.atan2(-moveX, -moveZ);
+        characterRef.current.rotation.y = angle; // 캐릭터 회전
       }
 
+      // 카메라 위치 업데이트
       camera.position.x =
         characterRef.current.position.x +
         cameraRadius * Math.sin(cameraAngle.theta);
