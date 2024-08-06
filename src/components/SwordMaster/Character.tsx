@@ -1,6 +1,6 @@
 import { useGLTF, useAnimations } from "@react-three/drei";
 import { useEffect, useRef, useState } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
 const Character = () => {
@@ -8,6 +8,7 @@ const Character = () => {
   const characterRef = useRef<THREE.Group>(null!);
   const { actions } = useAnimations(animations, characterRef);
   const [direction, setDirection] = useState<string | null>(null);
+  const { camera } = useThree();
 
   useEffect(() => {
     if (characterRef.current) {
@@ -88,6 +89,18 @@ const Character = () => {
         characterRef.current.position.x += moveX;
         characterRef.current.position.z += moveZ;
       }
+    }
+  });
+
+  useFrame(() => {
+    if (characterRef.current) {
+      const cameraOffset = new THREE.Vector3(0, 1.2, 1.2);
+      const cameraPosition = characterRef.current.position
+        .clone()
+        .add(cameraOffset.applyQuaternion(characterRef.current.quaternion));
+      cameraPosition.y = Math.max(cameraPosition.y, 1);
+      camera.position.copy(cameraPosition);
+      camera.lookAt(characterRef.current.position);
     }
   });
 
