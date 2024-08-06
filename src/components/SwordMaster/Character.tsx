@@ -94,12 +94,11 @@ const Character = () => {
 
   useFrame(() => {
     if (characterRef.current) {
-      const cameraOffset = new THREE.Vector3(0, 1.2, 1.2);
-      const cameraPosition = characterRef.current.position
+      const cameraOffset = new THREE.Vector3(0, 1.1, 1.1);
+      const targetPosition = characterRef.current.position
         .clone()
-        .add(cameraOffset.applyQuaternion(characterRef.current.quaternion));
-      cameraPosition.y = Math.max(cameraPosition.y, 1);
-      camera.position.copy(cameraPosition);
+        .add(cameraOffset);
+      camera.position.lerp(targetPosition, 0.1);
       camera.lookAt(characterRef.current.position);
     }
   });
