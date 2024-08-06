@@ -17,6 +17,9 @@ const Character = () => {
   });
   const [cameraRadius] = useState(3);
   const [cameraAngle, setCameraAngle] = useState({ theta: 0 });
+  const [cameraForwardDirection, setCameraForwardDirection] = useState(
+    new THREE.Vector3()
+  );
 
   useEffect(() => {
     if (characterRef.current) {
@@ -27,6 +30,10 @@ const Character = () => {
       switch (event.key) {
         case "w":
           setDirection("forward");
+          const cameraDirection = new THREE.Vector3();
+          camera.getWorldDirection(cameraDirection);
+          cameraDirection.y = 0;
+          cameraForwardDirection.copy(cameraDirection.normalize());
           break;
         case "a":
           setDirection("left");
@@ -99,53 +106,39 @@ const Character = () => {
   useFrame(() => {
     if (characterRef.current) {
       const speed = 0.03;
-      let moveX = 0;
-      let moveZ = 0;
-
-      // 카메라의 방향을 기준으로 이동 방향 설정
-      const cameraDirection = new THREE.Vector3();
-      camera.getWorldDirection(cameraDirection);
-      cameraDirection.y = 0; // y축 방향 제거
-      cameraDirection.normalize(); // 방향 벡터 정규화
+      let moveDirection = new THREE.Vector3();
 
       switch (direction) {
         case "forward":
-          moveX += cameraDirection.x * speed;
-          moveZ += cameraDirection.z * speed;
+          moveDirection.copy(cameraForwardDirection).multiplyScalar(speed);
           break;
         case "backward":
-          moveX -= cameraDirection.x * speed;
-          moveZ -= cameraDirection.z * speed;
+          moveDirection
+            .copy(cameraForwardDirection)
+            .negate()
+            .multiplyScalar(speed);
           break;
         case "left":
-          const leftDirection = new THREE.Vector3(
-            -cameraDirection.z,
-            0,
-            cameraDirection.x
-          ).normalize();
-          moveX += leftDirection.x * speed;
-          moveZ += leftDirection.z * speed;
+          moveDirection
+            .set(cameraForwardDirection.z, 0, -cameraForwardDirection.x)
+            .normalize()
+            .multiplyScalar(speed);
           break;
         case "right":
-          const rightDirection = new THREE.Vector3(
-            cameraDirection.z,
-            0,
-            -cameraDirection.x
-          ).normalize();
-          moveX += rightDirection.x * speed;
-          moveZ += rightDirection.z * speed;
+          moveDirection
+            .set(-cameraForwardDirection.z, 0, cameraForwardDirection.x)
+            .normalize()
+            .multiplyScalar(speed);
           break;
       }
 
-      if (moveX !== 0 || moveZ !== 0) {
-        characterRef.current.position.x += moveX;
-        characterRef.current.position.z += moveZ;
+      if (moveDirection.length() > 0) {
+        characterRef.current.position.add(moveDirection);
 
-        const angle = Math.atan2(-moveX, -moveZ);
-        characterRef.current.rotation.y = angle; // 캐릭터 회전
+        const angle = Math.atan2(-moveDirection.x, -moveDirection.z);
+        characterRef.current.rotation.y = angle;
       }
 
-      // 카메라 위치 업데이트
       camera.position.x =
         characterRef.current.position.x +
         cameraRadius * Math.sin(cameraAngle.theta);
