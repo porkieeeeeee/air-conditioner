@@ -10,6 +10,14 @@ const Character = () => {
   const [direction, setDirection] = useState<string | null>(null);
   const { camera } = useThree();
 
+  const [isDragging, setIsDragging] = useState(false);
+  const [previousMousePosition, setPreviousMousePosition] = useState({
+    x: 0,
+    y: 0,
+  });
+  const [cameraRadius] = useState(3);
+  const [cameraAngle, setCameraAngle] = useState({ theta: 0 });
+
   useEffect(() => {
     if (characterRef.current) {
       characterRef.current.scale.set(0.5, 0.5, 0.5);
@@ -38,14 +46,42 @@ const Character = () => {
       }
     };
 
+    const handleMouseDown = (event: MouseEvent) => {
+      setIsDragging(true);
+      setPreviousMousePosition({ x: event.clientX, y: event.clientY });
+    };
+
+    const handleMouseMove = (event: MouseEvent) => {
+      if (isDragging) {
+        const deltaX = event.clientX - previousMousePosition.x;
+
+        const sensitivity = 0.005;
+        setCameraAngle((prev) => ({
+          theta: prev.theta - deltaX * sensitivity,
+        }));
+
+        setPreviousMousePosition({ x: event.clientX, y: event.clientY });
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
+    window.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
+      window.removeEventListener("mousedown", handleMouseDown);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
     };
-  }, []);
+  }, [isDragging, previousMousePosition]);
 
   useEffect(() => {
     if (actions["Walk"] && actions["Idle"]) {
@@ -89,16 +125,14 @@ const Character = () => {
         characterRef.current.position.x += moveX;
         characterRef.current.position.z += moveZ;
       }
-    }
-  });
 
-  useFrame(() => {
-    if (characterRef.current) {
-      const cameraOffset = new THREE.Vector3(0, 1.1, 1.1);
-      const targetPosition = characterRef.current.position
-        .clone()
-        .add(cameraOffset);
-      camera.position.lerp(targetPosition, 0.1);
+      camera.position.x =
+        characterRef.current.position.x +
+        cameraRadius * Math.sin(cameraAngle.theta);
+      camera.position.z =
+        characterRef.current.position.z +
+        cameraRadius * Math.cos(cameraAngle.theta);
+      camera.position.y = characterRef.current.position.y + 1;
       camera.lookAt(characterRef.current.position);
     }
   });
