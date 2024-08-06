@@ -7,6 +7,7 @@ import Stones from "./Stones";
 import House from "./House";
 import Trees from "./Trees";
 import AirConditioner from "./AirConditioner";
+import Character from "./SwordMaster/Character";
 
 const Background = () => {
   const [texture, setTexture] = useState<THREE.Texture | null>(null);
@@ -40,6 +41,7 @@ const Background = () => {
       <Stones />
       <House />
       <AirConditioner />
+      <Character />
       <OrbitControls />
     </StyleCanvas>
   );
