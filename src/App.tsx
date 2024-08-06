@@ -1,5 +1,7 @@
+import Background from "components/Background";
+
 function App() {
-  return <div>init</div>;
+  return <Background />;
 }
 
 export default App;

@@ -6,6 +6,7 @@ import styled from "@emotion/styled";
 import Stones from "./Stones";
 import House from "./House";
 import Trees from "./Trees";
+import AirConditioner from "./AirConditioner";
 
 const Background = () => {
   const [texture, setTexture] = useState<THREE.Texture | null>(null);
@@ -38,6 +39,7 @@ const Background = () => {
       <Trees />
       <Stones />
       <House />
+      <AirConditioner />
       <OrbitControls />
     </StyleCanvas>
   );
