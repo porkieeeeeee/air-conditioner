@@ -62,20 +62,31 @@ const Character = () => {
 
   useFrame(() => {
     if (characterRef.current) {
-      const speed = 0.05;
+      const speed = 0.03;
+      let moveX = 0;
+      let moveZ = 0;
+
       switch (direction) {
         case "forward":
-          characterRef.current.position.z -= speed;
+          moveZ -= speed;
           break;
         case "left":
-          characterRef.current.position.x -= speed;
+          moveX -= speed;
           break;
         case "backward":
-          characterRef.current.position.z += speed;
+          moveZ += speed;
           break;
         case "right":
-          characterRef.current.position.x += speed;
+          moveX += speed;
           break;
+      }
+
+      if (moveX !== 0 || moveZ !== 0) {
+        const angle = Math.atan2(-moveX, -moveZ);
+        characterRef.current.rotation.y = angle;
+
+        characterRef.current.position.x += moveX;
+        characterRef.current.position.z += moveZ;
       }
     }
   });
